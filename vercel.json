@@ -1,7 +1,4 @@
 {
-  "buildCommand": "echo 'No build needed'",
-  "outputDirectory": ".",
-  "framework": null,
   "rewrites": [
     {
       "source": "/",
@@ -12,21 +9,21 @@
       "destination": "/mind/index.html"
     },
     {
-      "source": "/mind/(.*)",
-      "destination": "/mind/$1"
+      "source": "/mind/:path*",
+      "destination": "/mind/:path*"
     },
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
     }
   ],
   "headers": [
     {
-      "source": "/mind/(.*)",
+      "source": "/(.*)",
       "headers": [
         {
-          "key": "Cache-Control",
-          "value": "public, max-age=3600"
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
         }
       ]
     }
