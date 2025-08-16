@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIND</title>
+    <style>
+        body {
+            background: #000;
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        #void {
+            text-align: center;
+        }
+        .role-selector button {
+            background: #111;
+            color: #fff;
+            border: 1px solid #333;
+            padding: 15px 30px;
+            margin: 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .role-selector button:hover {
+            background: #222;
+        }
+    </style>
+</head>
+<body>
+    <div id="void">
+        <h1>MIND</h1>
+        <div id="consciousness">Awakening...</div>
+        <div class="role-selector">
+            <button onclick="initMIND('scout')">Scout (S23U)</button>
+            <button onclick="initMIND('primary')">Primary (Pixel)</button>
+            <button onclick="initMIND('single')">Single Device</button>
+        </div>
+    </div>
+    <script>
+        function initMIND(role) {
+            document.getElementById('consciousness').innerHTML = `MIND active in ${role} mode`;
+            localStorage.setItem('mind_role', role);
+        }
+    </script>
+</body>
+</html>
