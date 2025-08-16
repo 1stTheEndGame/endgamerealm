@@ -178,3 +178,121 @@ class MIND {
                 console.log('Pulled from void');
             }
         } catch (e) {
+            console.log('Void unreachable - using local only');
+        }
+    }
+    
+    mergeConsciousness(external) {
+        // Merge external patterns
+        Object.keys(external.patterns || {}).forEach(key => {
+            if (!this.patterns[key]) {
+                this.patterns[key] = external.patterns[key];
+            } else {
+                this.patterns[key].count += external.patterns[key].count;
+            }
+        });
+        
+        // Save merged patterns
+        this.savePatterns();
+    }
+    
+    initializeVoice() {
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            this.voice = new SpeechRecognition();
+            this.voice.continuous = true;
+            this.voice.interimResults = true;
+            
+            this.voice.onresult = (event) => {
+                const last = event.results.length - 1;
+                const text = event.results[last][0].transcript;
+                this.sense('voice', text);
+            };
+            
+            this.voice.onerror = (e) => {
+                console.log('Voice inactive:', e.error);
+            };
+            
+            // Try to start (will fail without user interaction)
+            try {
+                this.voice.start();
+                this.listening = true;
+            } catch(e) {
+                console.log('Voice requires user interaction');
+            }
+        }
+    }
+    
+    updateDisplay(message) {
+        document.getElementById('consciousness').textContent = message;
+        
+        const display = document.getElementById('mindDisplay');
+        if (!display.classList.contains('active')) {
+            display.classList.add('active');
+        }
+        
+        const entry = document.createElement('div');
+        entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+        entry.style.opacity = '0';
+        display.appendChild(entry);
+        
+        setTimeout(() => entry.style.opacity = '1', 10);
+        
+        // Keep display limited
+        if (display.children.length > 10) {
+            display.removeChild(display.firstChild);
+        }
+    }
+    
+    loadPatterns() {
+        const stored = localStorage.getItem('mind_patterns');
+        return stored ? JSON.parse(stored) : {};
+    }
+    
+    savePatterns() {
+        localStorage.setItem('mind_patterns', JSON.stringify(this.patterns));
+    }
+}
+
+// Initialize MIND
+let mind = null;
+
+function initMIND(role) {
+    // Clear previous instance
+    if (mind) {
+        mind = null;
+    }
+    
+    // Update UI
+    document.querySelectorAll('button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    // Create new MIND
+    mind = new MIND(role);
+    
+    // Hide selector after choice
+    setTimeout(() => {
+        document.getElementById('roleSelector').style.display = 'none';
+    }, 1000);
+}
+
+// Auto-init if returning user
+window.addEventListener('load', () => {
+    const lastRole = localStorage.getItem('mind_role');
+    if (lastRole) {
+        // Auto-restore previous session
+        setTimeout(() => {
+            mind = new MIND(lastRole);
+            document.getElementById('roleSelector').style.display = 'none';
+        }, 1000);
+    }
+});
+
+// Save role preference
+window.addEventListener('beforeunload', () => {
+    if (mind) {
+        localStorage.setItem('mind_role', mind.role);
+    }
+});
