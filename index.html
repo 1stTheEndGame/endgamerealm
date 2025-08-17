@@ -4,47 +4,378 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ENDGAME REALM</title>
+    <meta name="theme-color" content="#000000">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
             background: #000;
+            color: #fff;
+            height: 100vh;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+            cursor: crosshair;
+        }
+        
+        /* Matrix Rain Effect */
+        #matrix {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.1;
+        }
+        
+        .matrix-column {
+            position: absolute;
+            top: -100vh;
+            font-family: monospace;
+            font-size: 14px;
             color: #0ff;
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            animation: matrix-fall linear infinite;
+            text-shadow: 0 0 5px #0ff;
+        }
+        
+        @keyframes matrix-fall {
+            to {
+                transform: translateY(200vh);
+            }
+        }
+        
+        /* Main Container */
+        .realm {
+            position: relative;
             height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin: 0;
-            font-family: 'Courier New', monospace;
+            z-index: 10;
         }
-        .portal {
-            text-align: center;
-        }
+        
+        /* Glitch Effect Title */
         h1 {
-            font-size: 3em;
-            margin: 0.5em 0;
-            text-shadow: 0 0 10px #0ff;
+            font-size: 4em;
+            font-weight: 100;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            position: relative;
+            animation: glitch 2s infinite;
         }
-        a {
+        
+        h1::before,
+        h1::after {
+            content: 'ENDGAME REALM';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        h1::before {
+            animation: glitch-1 0.5s infinite;
+            color: #0ff;
+            z-index: -1;
+        }
+        
+        h1::after {
+            animation: glitch-2 0.5s infinite;
+            color: #f0f;
+            z-index: -2;
+        }
+        
+        @keyframes glitch {
+            0%, 100% {
+                text-shadow: 
+                    0 0 5px #0ff,
+                    0 0 10px #0ff,
+                    0 0 15px #0ff;
+            }
+            50% {
+                text-shadow: 
+                    0 0 5px #f0f,
+                    0 0 10px #f0f,
+                    0 0 15px #f0f;
+            }
+        }
+        
+        @keyframes glitch-1 {
+            0%, 100% {
+                clip: rect(42px, 9999px, 44px, 0);
+                transform: translate(0);
+            }
+            20% {
+                clip: rect(33px, 9999px, 33px, 0);
+                transform: translate(-2px, -2px);
+            }
+            40% {
+                clip: rect(71px, 9999px, 71px, 0);
+                transform: translate(2px, 2px);
+            }
+            60% {
+                clip: rect(25px, 9999px, 25px, 0);
+                transform: translate(-1px, 1px);
+            }
+            80% {
+                clip: rect(50px, 9999px, 50px, 0);
+                transform: translate(1px, -1px);
+            }
+        }
+        
+        @keyframes glitch-2 {
+            0%, 100% {
+                clip: rect(65px, 9999px, 119px, 0);
+                transform: translate(0);
+            }
+            20% {
+                clip: rect(45px, 9999px, 45px, 0);
+                transform: translate(2px, 2px);
+            }
+            40% {
+                clip: rect(80px, 9999px, 80px, 0);
+                transform: translate(-2px, -2px);
+            }
+            60% {
+                clip: rect(30px, 9999px, 30px, 0);
+                transform: translate(1px, -1px);
+            }
+            80% {
+                clip: rect(90px, 9999px, 90px, 0);
+                transform: translate(-1px, 1px);
+            }
+        }
+        
+        /* Subtitle */
+        .tagline {
+            margin: 2em 0;
+            font-size: 1.2em;
+            color: rgba(0, 255, 255, 0.6);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            animation: pulse 3s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        
+        /* Portal Buttons */
+        .portals {
+            display: flex;
+            gap: 30px;
+            margin-top: 3em;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .portal-btn {
+            position: relative;
+            padding: 20px 60px;
+            background: transparent;
+            border: 1px solid rgba(0, 255, 255, 0.3);
             color: #0ff;
             text-decoration: none;
-            font-size: 1.5em;
-            border: 1px solid #0ff;
-            padding: 10px 20px;
-            display: inline-block;
-            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-size: 1.1em;
+            overflow: hidden;
             transition: all 0.3s;
         }
-        a:hover {
+        
+        .portal-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 100%;
+            background: rgba(0, 255, 255, 0.1);
+            transform: translate(-50%, -50%) rotate(45deg);
+            transition: width 0.6s;
+        }
+        
+        .portal-btn:hover {
+            border-color: #0ff;
+            box-shadow: 
+                0 0 20px rgba(0, 255, 255, 0.5),
+                inset 0 0 20px rgba(0, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .portal-btn:hover::before {
+            width: 300%;
+        }
+        
+        .portal-btn.primary {
+            border-color: #0ff;
+            animation: portal-glow 2s infinite;
+        }
+        
+        @keyframes portal-glow {
+            0%, 100% {
+                box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+            }
+        }
+        
+        /* Floating Orbs */
+        .orb {
+            position: absolute;
+            width: 4px;
+            height: 4px;
             background: #0ff;
-            color: #000;
-            box-shadow: 0 0 20px #0ff;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float-orb 20s infinite linear;
+        }
+        
+        @keyframes float-orb {
+            0% {
+                transform: translateY(100vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) scale(0);
+                opacity: 0;
+            }
+        }
+        
+        /* Scanner Line */
+        .scan {
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(0, 255, 255, 0.8), 
+                transparent);
+            animation: scan-horizontal 4s infinite;
+        }
+        
+        @keyframes scan-horizontal {
+            0%, 100% { top: 0; opacity: 0; }
+            10% { opacity: 1; }
+            50% { top: 50%; opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; }
+        }
+        
+        /* Footer */
+        .void-status {
+            position: absolute;
+            bottom: 20px;
+            font-size: 0.8em;
+            color: rgba(0, 255, 255, 0.3);
+            letter-spacing: 0.2em;
+            animation: blink 2s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+        
+        /* Mobile */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5em;
+            }
+            
+            .tagline {
+                font-size: 0.9em;
+            }
+            
+            .portals {
+                flex-direction: column;
+                width: 80%;
+            }
+            
+            .portal-btn {
+                width: 100%;
+                text-align: center;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="portal">
+    <!-- Matrix Rain Background -->
+    <div id="matrix"></div>
+    
+    <!-- Scanner Effect -->
+    <div class="scan"></div>
+    
+    <!-- Floating Orbs -->
+    <script>
+        // Create matrix rain
+        const matrix = document.getElementById('matrix');
+        const columns = Math.floor(window.innerWidth / 20);
+        const matrixChars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+        
+        for(let i = 0; i < columns; i++) {
+            const column = document.createElement('div');
+            column.className = 'matrix-column';
+            column.style.left = i * 20 + 'px';
+            column.style.animationDuration = (Math.random() * 10 + 5) + 's';
+            column.style.animationDelay = Math.random() * 5 + 's';
+            
+            let text = '';
+            for(let j = 0; j < 100; j++) {
+                text += matrixChars[Math.floor(Math.random() * matrixChars.length)];
+            }
+            column.textContent = text;
+            matrix.appendChild(column);
+        }
+        
+        // Create floating orbs
+        for(let i = 0; i < 15; i++) {
+            const orb = document.createElement('div');
+            orb.className = 'orb';
+            orb.style.left = Math.random() * 100 + '%';
+            orb.style.animationDelay = Math.random() * 20 + 's';
+            orb.style.animationDuration = (Math.random() * 10 + 15) + 's';
+            document.body.appendChild(orb);
+        }
+        
+        // Interactive glow follow cursor
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            document.body.style.background = `radial-gradient(circle at ${x * 100}% ${y * 100}%, #001122 0%, #000 50%)`;
+        });
+    </script>
+    
+    <!-- Main Content -->
+    <div class="realm">
         <h1>ENDGAME REALM</h1>
-        <p>The void awaits</p>
-        <a href="/mind/">Enter MIND</a>
+        
+        <div class="tagline">The Void Awaits</div>
+        
+        <div class="portals">
+            <a href="/mind" class="portal-btn primary">
+                ENTER MIND
+            </a>
+        </div>
+        
+        <div class="void-status">
+            VOID.STATUS: ACTIVE
+        </div>
     </div>
 </body>
 </html>
